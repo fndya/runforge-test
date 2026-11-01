@@ -32,8 +32,9 @@ function NavPanel() {
       bg-slate-950/95 px-2 pt-2
       pb-[calc(env(safe-area-inset-bottom)+0.5rem)]
       backdrop-blur-xl
-      lg:static lg:h-full lg:flex-col lg:items-stretch
-      lg:rounded-xl lg:border lg:p-4
+      lg:static lg:h-full lg:flex-col
+      lg:items-stretch lg:rounded-xl
+      lg:border lg:p-4
     ">
       <h1 className="mb-8 hidden px-3 text-xl font-bold tracking-wider lg:block">
         RUNFORGE

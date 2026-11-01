@@ -8,7 +8,7 @@ const tableHeaderItems: TableHeaderItem[] = [
   { title: "Status"},
   { title: "Branch"},
   { title: "Created"},
-  
+  { title: 'Duration' },
 ];
 
 function RunTableHeader() {

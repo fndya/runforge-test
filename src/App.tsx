@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import NavPanel from './components/layout/NavPanel'
-import RunTable from './components/runs/RunTable'
+import NavPanel from './components/layout/NavPanel';
+import RunTable from './components/runs/RunTable';
 import type { Run, RunStatus } from './types/run';
 import { getRuns } from './services/runsService';
 import { RunDetailsModal } from './components/runs/RunDetailsModal';
 import { LoaderCircle, Search } from 'lucide-react';
 
 type StatusFilter = 'all' | RunStatus;
+
 const PAGE_SIZE = 10;
 
 function App() {
@@ -26,7 +27,6 @@ function App() {
     { label: 'Succeeded', value: 'succeeded' },
     { label: 'Failed', value: 'failed' },
   ];
-
 
   const filteredRuns = runs.filter((run) => {
     const query = searchQuery.trim().toLowerCase();
@@ -61,30 +61,63 @@ function App() {
         setLoading(false);
       });
   }, [retryCount]);
-  function handleRetry(){
+
+  function handleRetry() {
+    setLoading(true);
     setRetryCount((prev) => prev + 1);
   }
+
+  function handleSearchChange(value: string) {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  }
+
+  function handleStatusChange(value: StatusFilter) {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  }
+
+  function handleClearFilters() {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setCurrentPage(1);
+  }
+
   return (
     <>
-      <main className="
-        min-h-screen w-full min-w-0
-        bg-slate-950 p-3 pb-24
-        font-semibold text-white
-        sm:gap-5 sm:p-5 sm:pb-24
-        lg:grid lg:grid-cols-[260px_minmax(0,1fr)]
-        lg:grid-rows-1 lg:gap-5 lg:pb-5
-      ">
-        <NavPanel/>
+      <main
+        className="
+          min-h-screen w-full min-w-0
+          bg-slate-950 p-3 pb-24
+          font-semibold text-white
+          sm:p-5 sm:pb-24
+          lg:grid lg:grid-cols-[260px_minmax(0,1fr)]
+          lg:grid-rows-1 lg:gap-5 lg:pb-5
+        "
+      >
+        <NavPanel />
+
         <section className="min-w-0 w-full rounded-2xl border border-slate-800 p-3 sm:p-5">
-          <div className="my-5 flex flex-col gap-4">
+          {/* Search and filters */}
+          <div
+            className="
+              sticky top-0 z-30
+              -mx-3 -mt-3 mb-5
+              flex flex-col gap-4
+              border-b border-slate-800
+              bg-slate-950/95 px-3 py-4
+              backdrop-blur-xl
+              sm:-mx-5 sm:-mt-5 sm:px-5
+              lg:static lg:mx-0 lg:mt-0
+              lg:border-0 lg:bg-transparent
+              lg:px-0 lg:py-0 lg:backdrop-blur-none
+            "
+          >
             <div className="relative w-full">
               <input
                 type="search"
                 value={searchQuery}
-                onChange={(event) => {
-                  setSearchQuery(event.target.value);
-                  setCurrentPage(1);
-                }}
+                onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder="Search by name or repository..."
                 className="w-full rounded-xl border border-slate-800 bg-slate-900/50 p-3 pr-10 text-sm outline-none transition placeholder:text-slate-600 focus:border-blue-400"
               />
@@ -96,10 +129,7 @@ function App() {
               {statusFilters.map((filter) => (
                 <button
                   key={filter.value}
-                  onClick={() => {
-                    setStatusFilter(filter.value);
-                    setCurrentPage(1);
-                  }}
+                  onClick={() => handleStatusChange(filter.value)}
                   className={`rounded-lg border px-3 py-2 text-sm transition ${
                     statusFilter === filter.value
                       ? 'border-blue-500 bg-blue-500/15 text-blue-400'
@@ -111,17 +141,23 @@ function App() {
               ))}
             </div>
           </div>
+
           {loading ? (
-            <div className='flex flex-col min-h-full justify-center items-center'>
-              <LoaderCircle className='animate-spin'/>
+            <div className="flex min-h-64 flex-col items-center justify-center">
+              <LoaderCircle className="animate-spin" />
               <p>Loading runs...</p>
             </div>
           ) : error ? (
-            <div className='flex flex-col min-h-full justify-center items-center'>
+            <div className="flex min-h-64 flex-col items-center justify-center">
               <p>Something went wrong.</p>
-              <button className="m-4 py-2 px-4 border border-slate-400 rounded-lg transition hover:bg-slate-600 hover:border-slate-600" onClick={handleRetry}>Retry</button>
+              <button
+                className="m-4 rounded-lg border border-slate-400 px-4 py-2 transition hover:border-slate-600 hover:bg-slate-600"
+                onClick={handleRetry}
+              >
+                Retry
+              </button>
             </div>
-          ) :filteredRuns.length === 0 ? (
+          ) : filteredRuns.length === 0 ? (
             <div className="py-16 text-center">
               <p className="text-slate-300">No runs found</p>
               <p className="mt-2 text-sm text-slate-500">
@@ -129,11 +165,7 @@ function App() {
               </p>
 
               <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setStatusFilter('all');
-                  setCurrentPage(1);
-                }}
+                onClick={handleClearFilters}
                 className="mt-4 text-sm text-blue-400 hover:text-blue-300"
               >
                 Clear filters
@@ -141,43 +173,61 @@ function App() {
             </div>
           ) : (
             <div>
-              <RunTable
-              runs={paginatedRuns}
-              onSelectRun={setSelectedRun}
-            />
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-slate-500">
-                  Showing {(currentPage - 1) * PAGE_SIZE + 1}–
-                  {Math.min(currentPage * PAGE_SIZE, filteredRuns.length)} of{' '}
-                  {filteredRuns.length} runs
+              {/* Mobile: show all filtered runs */}
+              <div className="md:hidden">
+                <RunTable
+                  runs={filteredRuns}
+                  onSelectRun={setSelectedRun}
+                />
+
+                <p className="mt-5 text-sm text-slate-500">
+                  {filteredRuns.length}{' '}
+                  {filteredRuns.length === 1 ? 'run' : 'runs'} found
                 </p>
+              </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((page) => page - 1)}
-                    className="rounded-lg border border-slate-800 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Previous
-                  </button>
+              {/* Tablet and desktop: pagination */}
+              <div className="hidden md:block">
+                <RunTable
+                  runs={paginatedRuns}
+                  onSelectRun={setSelectedRun}
+                />
 
-                  <span className="min-w-16 text-center text-sm text-slate-400">
-                    {currentPage} / {totalPages}
-                  </span>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm text-slate-500">
+                    Showing {(currentPage - 1) * PAGE_SIZE + 1}–
+                    {Math.min(currentPage * PAGE_SIZE, filteredRuns.length)} of{' '}
+                    {filteredRuns.length} runs
+                  </p>
 
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((page) => page + 1)}
-                    className="rounded-lg border border-slate-800 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Next
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((page) => page - 1)}
+                      className="rounded-lg border border-slate-800 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Previous
+                    </button>
+
+                    <span className="min-w-16 text-center text-sm text-slate-400">
+                      {currentPage} / {totalPages}
+                    </span>
+
+                    <button
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((page) => page + 1)}
+                      className="rounded-lg border border-slate-800 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           )}
-        </section>  
+        </section>
       </main>
+
       {selectedRun && (
         <RunDetailsModal
           run={selectedRun}
@@ -185,7 +235,7 @@ function App() {
         />
       )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
