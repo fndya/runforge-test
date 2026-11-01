@@ -8,6 +8,12 @@ import { LoaderCircle, Search } from 'lucide-react';
 
 type StatusFilter = 'all' | RunStatus;
 
+type SortOption =
+  | 'date-desc'
+  | 'date-asc'
+  | 'duration-asc'
+  | 'duration-desc';
+
 const PAGE_SIZE = 10;
 
 function App() {
@@ -15,6 +21,7 @@ function App() {
   const [selectedRun, setSelectedRun] = useState<Run | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('date-desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -41,9 +48,28 @@ function App() {
     return matchesSearch && matchesStatus;
   });
 
-  const totalPages = Math.ceil(filteredRuns.length / PAGE_SIZE);
+  const sortedRuns = [...filteredRuns].sort((a, b) => {
+    if (sortOption === 'duration-asc' || sortOption === 'duration-desc') {
+      // Запуски без известной длительности отправляем в конец
+      if (a.duration === undefined) return 1;
+      if (b.duration === undefined) return -1;
 
-  const paginatedRuns = filteredRuns.slice(
+      return sortOption === 'duration-asc'
+        ? a.duration - b.duration
+        : b.duration - a.duration;
+    }
+
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+
+    return sortOption === 'date-desc'
+      ? dateB - dateA
+      : dateA - dateB;
+  });
+
+  const totalPages = Math.ceil(sortedRuns.length / PAGE_SIZE);
+
+  const paginatedRuns = sortedRuns.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
@@ -125,7 +151,7 @@ function App() {
               <Search className="absolute right-3 top-3 size-4 text-slate-500" />
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {statusFilters.map((filter) => (
                 <button
                   key={filter.value}
@@ -139,6 +165,21 @@ function App() {
                   {filter.label}
                 </button>
               ))}
+
+              <select
+                value={sortOption}
+                onChange={(event) => {
+                  setSortOption(event.target.value as SortOption);
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 outline-none focus:border-blue-400"
+                aria-label="Sort runs"
+              >
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="duration-asc">Shortest first</option>
+                <option value="duration-desc">Longest first</option>
+              </select>
             </div>
           </div>
 
@@ -176,7 +217,7 @@ function App() {
               {/* Mobile: show all filtered runs */}
               <div className="md:hidden">
                 <RunTable
-                  runs={filteredRuns}
+                  runs={sortedRuns}
                   onSelectRun={setSelectedRun}
                 />
 
