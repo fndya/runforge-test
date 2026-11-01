@@ -16,7 +16,7 @@ function MenuItem({title, active, icon: Icon, iconAnimation = false,}: MenuItemP
     };
 
     return (
-        <a className={`flex group items-center gap-3 rounded-lg px-3 py-3 ${style}`}>
+        <a className={`flex flex-col group items-center gap-3 rounded-lg px-3 py-3 lg:flex-row ${style}`}>
             <Icon size={18} className={`transition ${iconAnimation ? "group-hover:animate-spin" : ""}`}/>
             {title}
         </a>

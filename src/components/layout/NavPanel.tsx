@@ -19,18 +19,18 @@ function NavPanel() {
     
 
     return (
-        <nav className="flex flex-col rounded-xl border border-slate-800 p-4">
-          <h1 className="mb-8 px-3 text-xl font-bold tracking-wider">
+        <nav className="flex row-start-2 items-center rounded-xl border border-slate-800 p-4 lg:flex-col lg:row-start-1">
+          <h1 className="px-3 hidden text-xl font-bold tracking-wider lg:block lg:mb-8">
             RUNFORGE
           </h1>
 
-          <span className="mb-3 px-3 text-xs font-semibold text-slate-500">
+          <span className="mb-3 px-3 hidden text-xs font-semibold text-slate-500 lg:block">
             WORKSPACE
           </span>
 
-          <ul className="flex flex-col gap-1">
+          <ul className="flex justify-between w-full lg:flex-col gap-1">
             {navItems.map((item) => (
-               <li key={item.title}>
+               <li className="w-30 lg:w-full" key={item.title}>
                     <MenuItem
                         title={item.title}
                         icon={item.icon}
@@ -38,11 +38,14 @@ function NavPanel() {
                     />        
                </li> 
             ))}
+            
+            <li>
+              <div className="w-30 mt-auto lg:pt-6 lg:w-full">
+                <MenuItem title='Settings' icon={Cog} iconAnimation={true}/>
+              </div>
+            </li>
           </ul>
 
-          <div className="mt-auto pt-6">
-            <MenuItem title='Settings' icon={Cog} iconAnimation={true}/>
-          </div>
         </nav>
     );
 }
