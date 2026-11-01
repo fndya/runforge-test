@@ -1,5 +1,12 @@
 import MenuItem from "../ui/MenuItem";
-import { Box, Cog, DatabaseBackup, Eye, FolderGit2, Play } from 'lucide-react';
+import {
+  Box,
+  Cog,
+  DatabaseBackup,
+  Eye,
+  FolderGit2,
+  Play,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface NavItem {
@@ -15,9 +22,19 @@ const navItems: NavItem[] = [
   { title: "Previews", icon: Eye },
   { title: "Snapshots", icon: DatabaseBackup },
 ];
+
 function NavPanel() {
   return (
-    <nav className="flex items-center rounded-xl border border-slate-800 p-2 lg:h-full lg:flex-col lg:items-stretch lg:p-4">
+    <nav className="
+      fixed inset-x-0 bottom-0 z-40
+      flex items-center
+      border-t border-slate-800
+      bg-slate-950/95 px-2 pt-2
+      pb-[calc(env(safe-area-inset-bottom)+0.5rem)]
+      backdrop-blur-xl
+      lg:static lg:h-full lg:flex-col lg:items-stretch
+      lg:rounded-xl lg:border lg:p-4
+    ">
       <h1 className="mb-8 hidden px-3 text-xl font-bold tracking-wider lg:block">
         RUNFORGE
       </h1>
@@ -26,9 +43,15 @@ function NavPanel() {
         WORKSPACE
       </span>
 
-      <ul className="flex w-full items-center gap-1 lg:flex-col lg:items-stretch">
+      <ul className="
+        flex w-full items-center justify-around gap-1
+        lg:flex-col lg:items-stretch
+      ">
         {navItems.map((item) => (
-          <li className="min-w-0 flex-1 lg:w-full lg:flex-none" key={item.title}>
+          <li
+            className="min-w-0 flex-1 lg:w-full lg:flex-none"
+            key={item.title}
+          >
             <MenuItem
               title={item.title}
               icon={item.icon}
@@ -42,6 +65,7 @@ function NavPanel() {
         </li>
       </ul>
     </nav>
-  );    
+  );
 }
+
 export default NavPanel;

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './App.css'
 import NavPanel from './components/layout/NavPanel'
 import RunTable from './components/runs/RunTable'
 import type { Run, RunStatus } from './types/run';
@@ -8,7 +7,7 @@ import { RunDetailsModal } from './components/runs/RunDetailsModal';
 import { LoaderCircle, Search } from 'lucide-react';
 
 type StatusFilter = 'all' | RunStatus;
-
+const PAGE_SIZE = 10;
 
 function App() {
   const [runs, setRuns] = useState<Run[]>([]);
@@ -19,7 +18,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-  const PAGE_SIZE = 5;
 
   const statusFilters: { label: string; value: StatusFilter }[] = [
     { label: 'All', value: 'all' },
@@ -68,7 +66,14 @@ function App() {
   }
   return (
     <>
-      <main className="grid min-h-screen grid-rows-[1fr_auto] gap-3 bg-slate-950 p-3 font-semibold text-white sm:gap-5 sm:p-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:grid-rows-1 w-full min-w-0">
+      <main className="
+        min-h-screen w-full min-w-0
+        bg-slate-950 p-3 pb-24
+        font-semibold text-white
+        sm:gap-5 sm:p-5 sm:pb-24
+        lg:grid lg:grid-cols-[260px_minmax(0,1fr)]
+        lg:grid-rows-1 lg:gap-5 lg:pb-5
+      ">
         <NavPanel/>
         <section className="min-w-0 w-full rounded-2xl border border-slate-800 p-3 sm:p-5">
           <div className="my-5 flex flex-col gap-4">
@@ -91,7 +96,10 @@ function App() {
               {statusFilters.map((filter) => (
                 <button
                   key={filter.value}
-                  onClick={() => setStatusFilter(filter.value)}
+                  onClick={() => {
+                    setStatusFilter(filter.value);
+                    setCurrentPage(1);
+                  }}
                   className={`rounded-lg border px-3 py-2 text-sm transition ${
                     statusFilter === filter.value
                       ? 'border-blue-500 bg-blue-500/15 text-blue-400'
@@ -124,6 +132,7 @@ function App() {
                 onClick={() => {
                   setSearchQuery('');
                   setStatusFilter('all');
+                  setCurrentPage(1);
                 }}
                 className="mt-4 text-sm text-blue-400 hover:text-blue-300"
               >

@@ -12,7 +12,7 @@ function RunTable({ runs, onSelectRun }: RunTableProps) {
   return (
     <>
       {/* Mobile cards */}
-      <div className="flex flex-col gap-3 md:hidden">
+      <div className="flex min-w-0 flex-col gap-3 overflow-hidden md:hidden">
         {runs.map((run) => (
           <button
             key={run.id}
@@ -20,9 +20,9 @@ function RunTable({ runs, onSelectRun }: RunTableProps) {
             className="w-full min-w-0 rounded-xl border border-slate-800 bg-slate-900/50 p-4 text-left transition hover:border-slate-600 hover:bg-slate-800/70"
           >
             <div className="flex items-start justify-between gap-3">
-              <p className="min-w-0 wrap-break-word font-medium text-slate-200">
-                {run.name}
-              </p>
+                <p className="min-w-0 break-all font-medium text-slate-200">
+                    {run.name}
+                </p>
               <RunStatus status={run.status} />
             </div>
 
