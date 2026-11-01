@@ -16,37 +16,32 @@ const navItems: NavItem[] = [
   { title: "Snapshots", icon: DatabaseBackup },
 ];
 function NavPanel() {
-    
+  return (
+    <nav className="flex items-center rounded-xl border border-slate-800 p-2 lg:h-full lg:flex-col lg:items-stretch lg:p-4">
+      <h1 className="mb-8 hidden px-3 text-xl font-bold tracking-wider lg:block">
+        RUNFORGE
+      </h1>
 
-    return (
-        <nav className="flex row-start-2 items-center rounded-xl border border-slate-800 p-4 lg:flex-col lg:row-start-1">
-          <h1 className="px-3 hidden text-xl font-bold tracking-wider lg:block lg:mb-8">
-            RUNFORGE
-          </h1>
+      <span className="mb-3 hidden px-3 text-xs font-semibold text-slate-500 lg:block">
+        WORKSPACE
+      </span>
 
-          <span className="mb-3 px-3 hidden text-xs font-semibold text-slate-500 lg:block">
-            WORKSPACE
-          </span>
+      <ul className="flex w-full items-center gap-1 lg:flex-col lg:items-stretch">
+        {navItems.map((item) => (
+          <li className="min-w-0 flex-1 lg:w-full lg:flex-none" key={item.title}>
+            <MenuItem
+              title={item.title}
+              icon={item.icon}
+              active={item.active}
+            />
+          </li>
+        ))}
 
-          <ul className="flex justify-between w-full lg:flex-col gap-1">
-            {navItems.map((item) => (
-               <li className="w-30 lg:w-full" key={item.title}>
-                    <MenuItem
-                        title={item.title}
-                        icon={item.icon}
-                        active={item.active}
-                    />        
-               </li> 
-            ))}
-            
-            <li>
-              <div className="w-30 mt-auto lg:pt-6 lg:w-full">
-                <MenuItem title='Settings' icon={Cog} iconAnimation={true}/>
-              </div>
-            </li>
-          </ul>
-
-        </nav>
-    );
+        <li className="min-w-0 flex-1 lg:mt-auto lg:w-full lg:flex-none">
+          <MenuItem title="Settings" icon={Cog} iconAnimation />
+        </li>
+      </ul>
+    </nav>
+  );    
 }
 export default NavPanel;

@@ -10,15 +10,15 @@ interface RunDetailsModalProps {
 export function RunDetailsModal({run, onClose}: RunDetailsModalProps) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in duration-600"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 backdrop-blur-sm sm:p-4 animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6 text-white"
+        className="max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-4 text-white sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">{run.name}</h2>
+          <h2 className="wrap-break-word text-xl font-bold">{run.name}</h2>
 
           <button onClick={onClose}><X className="hover:animate-pulse"/></button>
         </div>
