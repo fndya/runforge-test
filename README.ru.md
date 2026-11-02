@@ -1,6 +1,7 @@
 # RunForge
 
 Адаптивная панель мониторинга CI/CD-запусков, созданная с использованием React, TypeScript и Tailwind CSS.
+Проект доступен по ссылке: https://fndya.github.io/runforge-test/
 
 ## О проекте
 
