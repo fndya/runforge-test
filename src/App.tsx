@@ -19,13 +19,70 @@ const PAGE_SIZE = 10;
 function App() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [selectedRun, setSelectedRun] = useState<Run | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [sortOption, setSortOption] = useState<SortOption>('date-desc');
+  const [searchQuery, setSearchQuery] = useState(() => {
+    return new URLSearchParams(window.location.search).get('search') ?? '';
+  });
+
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(() => {
+    const value = new URLSearchParams(window.location.search).get('status');
+
+    const validStatuses: StatusFilter[] = [
+      'all',
+      'queued',
+      'running',
+      'succeeded',
+      'failed',
+    ];
+
+    return validStatuses.includes(value as StatusFilter)
+      ? (value as StatusFilter)
+      : 'all';
+  });
+
+  const [sortOption, setSortOption] = useState<SortOption>(() => {
+    const value = new URLSearchParams(window.location.search).get('sort');
+
+    const validSortOptions: SortOption[] = [
+      'date-desc',
+      'date-asc',
+      'duration-asc',
+      'duration-desc',
+    ];
+
+    return validSortOptions.includes(value as SortOption)
+      ? (value as SortOption)
+      : 'date-desc';
+  });
+
+  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery.trim());
+    }
+
+    if (statusFilter !== 'all') {
+      params.set('status', statusFilter);
+    }
+
+    if (sortOption !== 'date-desc') {
+      params.set('sort', sortOption);
+    }
+
+    const queryString = params.toString();
+    const newUrl = queryString
+      ? `${window.location.pathname}?${queryString}`
+      : window.location.pathname;
+
+    window.history.replaceState(null, '', newUrl);
+  }, [searchQuery, statusFilter, sortOption]);
 
   const statusFilters: { label: string; value: StatusFilter }[] = [
     { label: 'All', value: 'all' },
