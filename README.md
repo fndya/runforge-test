@@ -1,5 +1,5 @@
 # RunForge
-![This README is also available in Russian](https://github.com/fndya/runforge-test/blob/main/README.ru.md)
+[This README is also available in Russian](https://github.com/fndya/runforge-test/blob/main/README.ru.md)
 
 A responsive CI/CD runs dashboard built with React, TypeScript, and Tailwind CSS.
 
