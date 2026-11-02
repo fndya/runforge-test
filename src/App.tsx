@@ -4,7 +4,7 @@ import RunTable from './components/runs/RunTable';
 import type { Run, RunStatus } from './types/run';
 import { getRuns } from './services/runsService';
 import { RunDetailsModal } from './components/runs/RunDetailsModal';
-import { LoaderCircle, Search } from 'lucide-react';
+import { LoaderCircle, Search, X } from 'lucide-react';
 
 type StatusFilter = 'all' | RunStatus;
 
@@ -197,15 +197,26 @@ function App() {
             "
           >
             <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder="Search by name or repository..."
-                className="w-full rounded-xl border border-slate-800 bg-slate-900/50 p-3 pr-10 text-sm outline-none transition placeholder:text-slate-600 focus:border-blue-400"
+                className="w-full rounded-xl border border-slate-800 bg-slate-900/50 p-3 pl-10 pr-10 text-sm outline-none transition placeholder:text-slate-600 focus:border-blue-400"
               />
 
-              <Search className="absolute right-3 top-3 size-4 text-slate-500" />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => handleSearchChange('')}
+                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-white"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-2">

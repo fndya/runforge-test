@@ -12,3 +12,9 @@
 .animate-fade-in {
   animation: fadeIn 200ms ease-out forwards;
 }
+
+/* Убираем стандартный крестик у input type="search" */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}

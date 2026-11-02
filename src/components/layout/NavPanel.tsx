@@ -33,7 +33,7 @@ function NavPanel() {
         bg-slate-950/95 px-2 pt-2
         pb-[calc(env(safe-area-inset-bottom)+0.5rem)]
         backdrop-blur-xl
-        lg:static lg:h-full lg:min-h-[600px] lg:flex-col
+        lg:static lg:h-full lg:min-h-150 lg:flex-col
         lg:items-stretch lg:rounded-xl
         lg:border lg:p-4
       "
